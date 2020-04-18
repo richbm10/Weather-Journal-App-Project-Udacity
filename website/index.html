@@ -4,11 +4,54 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="./app/styles/pages/index.css" />
     <title>Weather Journal App</title>
 </head>
 
-<body>
-    <script src="./app/app.js"></script>
+<body class="primary-color">
+    <div id="top-bar" class="container secondary-color">
+        <b id="location"></b>
+
+        <object type="image/svg+xml" data="./assets/icons/location_on-24px.svg" id="location-icon" class="top-bar-icon"></object>
+    </div>
+
+    <main id="main">
+        <div id="main-content" class="container-top">
+            <div id="weather-temperature" class="container-top">
+                <span id="time"></span>
+
+                <div class="container-left">
+                    <img id="weather-icon" />
+
+                    <h1 id="temperature"></h1>
+                </div>
+
+                <div class="container-left">
+                    <div class="container-top temp-container">
+                        <span id="max-temperature"></span>
+                        <span id="min-temperature"></span>
+                    </div>
+
+                    <div id="weather-condition" class="container-top temp-container">
+                        <span id="feels-like"></span>
+                        <span id="weather-main"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button secondary-color">
+                Locations
+            </div>
+
+            <div class="card container secondary-color">
+                <div class="vr"></div>
+
+                <div class="vr"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="./app/app-test.js"></script>
 </body>
 
 </html>

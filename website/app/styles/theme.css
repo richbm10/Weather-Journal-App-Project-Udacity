@@ -1,0 +1,49 @@
+body {
+    font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+    font-size: 16px;
+    color: #FFFFFF;
+}
+
+span {
+    font-size: 0.75em;
+}
+
+h1 {
+    margin: 0;
+    font-size: 3.5em;
+}
+
+.primary-color {
+    background-color: #3EC4FF;
+}
+
+.secondary-color {
+    background-color: #00B1FF;
+}
+
+@media only screen and (min-width: 375px) {}
+
+
+/* Extra small devices (phones, 600px and down) */
+
+@media only screen and (max-width: 600px) {}
+
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+
+@media only screen and (min-width: 600px) {}
+
+
+/* Medium devices (landscape tablets, 768px and up) */
+
+@media only screen and (min-width: 768px) {}
+
+
+/* Large devices (laptops/desktops, 992px and up) */
+
+@media only screen and (min-width: 992px) {}
+
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+
+@media only screen and (min-width: 1200px) {}
