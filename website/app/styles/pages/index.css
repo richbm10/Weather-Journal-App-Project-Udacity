@@ -33,11 +33,8 @@ body {
 }
 
 #main-content {
+    padding: 5vh 0 5vh 0;
     grid-area: 1/2/2/3;
-}
-
-#weather-temperature {
-    margin-top: 5vh;
 }
 
 #time {

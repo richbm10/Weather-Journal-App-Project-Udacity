@@ -16,11 +16,16 @@
 
 .weather-card {
     width: 80vw;
-    height: 8vh;
+    padding: 2% 0 2% 0;
     margin-top: 5vh;
     justify-content: space-evenly;
 }
 
-.weather-card-simple {
+.weather-card-row {
+    width: 60vw;
+    justify-content: space-between;
+}
+
+.weather-card.weather-card-simple {
     width: 65vw;
 }

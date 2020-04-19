@@ -59,6 +59,8 @@ const icons = {
     'Pressure': 'pressure.svg'
 };
 
+const weatherCardsA = new Set(['rain', 'wind', 'clouds', 'snow']);
+
 function startMeasure() {
     return performance.now();
 }
@@ -138,7 +140,10 @@ function decorateWeatherCardProperty(weatherCard, property) {
     div.appendChild(addPropertyContent(propertyElement, property));
 
     weatherCard.appendChild(div);
-    weatherCard = addPipe(weatherCard);
+
+    if (weatherCardsA.has(property)) {
+        weatherCard = addPipe(weatherCard);
+    }
 
     return weatherCard;
 }
@@ -267,6 +272,7 @@ function decorateWeatherCardValues(weatherCard, property) {
     }
     if (property === 'Humidity' || property === 'Sunsire' ||
         property === 'Sunset' || property === 'Sea Level' || property === 'Ground Level') {
+        console.log('decorateWeatherCardValues', weatherCard.outerHTML);
         weatherCard = decorateSingleRow(weatherCard, property);
     }
     return weatherCard;
@@ -280,7 +286,7 @@ const toTitleCase = (phrase) => {
         .join(' ');
 };
 
-function decorateWeatherCard(weatherCard, property) {
+function decorateWeatherCardRow(weatherCard, property) {
     property = property.replace('_', ' ');
     property = toTitleCase(property);
     if (property === 'Grnd Level') {
@@ -298,7 +304,7 @@ function createWeatherCard(type) {
         weatherCard.classList.add('weather-card', 'container');
     }
     if (type === 'B') {
-        weatherCard.classList.add('container-top');
+        weatherCard.classList.add('weather-card', 'container-top');
     }
     return weatherCard;
 }
@@ -312,7 +318,7 @@ function setWeatherCardsA() {
     for (let property of properties) {
         if (property in data || property in data.main) {
             let weatherCard = createWeatherCard('A');
-            weatherCard = decorateWeatherCard(weatherCard, property);
+            weatherCard = decorateWeatherCardRow(weatherCard, property);
             buildWeatherCard(weatherCard);
         }
     }
@@ -326,9 +332,16 @@ function setWeatherCardsA() {
 //     buildWeatherCard(weatherCard);
 // }
 
+function createWeatherCardRow() {
+    const row = document.createElement('div');
+    row.classList.add('container', 'weather-card-row');
+    return row;
+}
+
 function setWeatherCardB(weatherCard, properties) {
     for (property of properties) {
-        weatherCard = decorateWeatherCard(weatherCard, property);
+        row = decorateWeatherCardRow(createWeatherCardRow(), property);
+        weatherCard.appendChild(row);
     }
     return weatherCard;
 }
@@ -356,7 +369,7 @@ function setWeatherCardsB() {
     }
 
     if ('humidity' in data.main || 'sunrise' in data.sys || 'sunset' in data.sys) {
-        weatherCard = createWeatherCard();
+        weatherCard = createWeatherCard('B');
         weatherCard = setWeatherCardB(weatherCard, ['humidity', 'sunrise', 'sunset']);
         buildWeatherCard(weatherCard);
     }
