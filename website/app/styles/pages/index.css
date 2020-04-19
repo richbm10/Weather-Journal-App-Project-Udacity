@@ -2,6 +2,7 @@
 @import "../theme.css";
 @import "../components/top-bar.css";
 @import "../components/button.css";
+@import "../components/weather-card.css";
 html {
     scroll-behavior: smooth;
 }

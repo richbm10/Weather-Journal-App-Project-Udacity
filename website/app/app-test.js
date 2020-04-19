@@ -46,6 +46,18 @@ function addWeatherFeelings(weather, feeling) {
 }
 
 //Dynamic UI
+const iconsPath = './assets/icons/';
+const icons = {
+    'Rain': 'water.svg',
+    'Wind': 'wind.svg',
+    'Clouds': 'clouds.svg',
+    'Sea Level': 'ocean.svg',
+    'Ground Level': 'mountains.svg',
+    'Humidity': 'water.svg',
+    'Sunrise': 'sun.svg',
+    'Sunset': 'sunset.svg',
+    'Pressure': 'pressure.svg'
+};
 
 function startMeasure() {
     return performance.now();
@@ -83,7 +95,7 @@ function setWeatherTemperature() {
     );
 
     time.textContent = getTimeZone();
-    weatherIcon.setAttribute('src', './assets/icons/climate.svg');
+    weatherIcon.setAttribute('src', `${iconsPath}climate.svg`);
     temperature.textContent = `${data.main.temp}°`;
     feelsLike.textContent = `Feels like ${data.main.feels_like}°`;
     weatherMain.textContent = data.weather[0].description;
@@ -91,39 +103,263 @@ function setWeatherTemperature() {
     minTemperature.textContent = `${data.main.temp_min}° min`;
 }
 
+function addPipe(weatherCard) {
+    const pipe = document.createElement('div');
+    pipe.classList.add('pipe');
+    weatherCard.appendChild(pipe);
+    return weatherCard;
+}
+
+function addPropertyContent(propertyElement, property) {
+    if (property === 'Sea Level' || property === 'Ground Level') {
+        propertyElement.classList.add('container-top');
+        const label = createElement('div');
+        label.textContent = property;
+        const tag = createElement('span');
+        tag.textContent = '  Atmospheric Pressure';
+        propertyElement.appendChild(label);
+        propertyElement.appendChild(tag);
+    } else {
+        propertyElement.textContent = property;
+    }
+    return propertyElement;
+}
+
+function decorateWeatherCardProperty(weatherCard, property) {
+    const div = document.createElement('div');
+    div.classList.add('container-left');
+
+    const icon = document.createElement('img');
+    icon.classList.add('weather-card-icon');
+    icon.setAttribute('src', iconsPath + icons[property]);
+    div.appendChild(icon);
+
+    const propertyElement = document.createElement('div');
+    div.appendChild(addPropertyContent(propertyElement, property));
+
+    weatherCard.appendChild(div);
+    weatherCard = addPipe(weatherCard);
+
+    return weatherCard;
+}
+
+function addValue(weatherCard, tag, value) {
+    const valueContainer = document.createElement('div');
+    valueContainer.classList.add('container-top');
+
+    const lable = document.createElement('span');
+    lable.textContent = tag;
+
+    valueContainer.appendChild(lable);
+    valueContainer.appendChild(value);
+    weatherCard.appendChild(valueContainer);
+
+    return weatherCard;
+}
+
+function setColValues(property) {
+    const valueColA = document.createElement('span');
+    const valueColB = document.createElement('span');
+
+    switch (property) {
+        case 'Snow':
+            valueColA.textContent = `${data.snow['1h']}%`;
+            valueColB.textContent = `${data.snow['3h']}%`;
+            break;
+        case 'Rain':
+            valueColA.textContent = `${data.rain['1h']}%`;
+            valueColB.textContent = `${data.rain['3h']}%`;
+            break;
+        case 'Wind':
+            valueColA.textContent = `${data.wind.speed} m/s`;
+            valueColB.textContent = `${data.wind.deg}°`;
+            break;
+        default:
+            break;
+    }
+
+    return [valueColA, valueColB];
+}
+
+function utcToLocalTime(utc) {
+    return (new Date(utc * 1000)).toLocaleTimeString(); //From https://stackoverflow.com/users/2030565/jasen
+}
+
+function addRowValue(property) {
+    const value = document.createElement('span');
+
+    switch (property) {
+        case 'Sea Level':
+            value.textContent = `${data.main.sea_level} hPa`;
+            break;
+        case 'Ground Level':
+            value.textContent = `${data.main.grnd_level} hPa`;
+            break;
+        case 'Humidity':
+            value.textContent = `${data.main.humidity}%`;
+            break;
+        case 'Sunrise':
+            value.textContent = utcToLocalTime(data.sys.sunrise);
+            break;
+        case 'Sunset':
+            value.textContent = utcToLocalTime(data.sys.sunset);
+            break;
+        default:
+            break;
+    }
+
+    return value;
+}
+
+function addColValues(weatherCard, property, ...values) {
+    if (property === 'Wind') {
+        weatherCard = addValue(weatherCard, 'speed', values[0]);
+    } else {
+        weatherCard = addValue(weatherCard, 'last 1h', values[0]);
+    }
+
+    weatherCard = addPipe(weatherCard);
+
+    if (property === 'Wind') {
+        weatherCard = addValue(weatherCard, 'direction', values[1]);
+    } else {
+        weatherCard = addValue(weatherCard, 'last 3h', values[1]);
+    }
+    return weatherCard;
+}
+
+function decorateDoubleCols(weatherCard, property) {
+    const [valueColA, valueColB] = setColValues(property);
+    weatherCard = addColValues(weatherCard, property, valueColA, valueColB);
+
+    return weatherCard;
+}
+
+function decorateSingleCol(weatherCard, property) {
+    const value = document.createElement('div');
+    if (property === 'Clouds') {
+        value.textContent = data.clouds.all + '%';
+    }
+    if (property === 'Pressure') {
+        value.textContent = data.main.pressure + ' hPa';
+    }
+
+    weatherCard.appendChild(value);
+
+    weatherCard.classList.add('weather-card-simple');
+
+    return weatherCard;
+}
+
+function decorateSingleRow(weatherCard, property) {
+    const value = addRowValue(property);
+    weatherCard.appendChild(value);
+
+    return weatherCard;
+}
+
+function decorateWeatherCardValues(weatherCard, property) {
+    if (property === 'Rain' || property === 'Snow' || property === 'Wind') {
+        weatherCard = decorateDoubleCols(weatherCard, property);
+    }
+    if (property === 'Clouds' || property === 'Pressure') {
+        weatherCard = decorateSingleCol(weatherCard, property);
+    }
+    if (property === 'Humidity' || property === 'Sunsire' ||
+        property === 'Sunset' || property === 'Sea Level' || property === 'Ground Level') {
+        weatherCard = decorateSingleRow(weatherCard, property);
+    }
+    return weatherCard;
+}
+
+const toTitleCase = (phrase) => {
+    return phrase
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+};
+
+function decorateWeatherCard(weatherCard, property) {
+    property = property.replace('_', ' ');
+    property = toTitleCase(property);
+    if (property === 'Grnd Level') {
+        property = 'Ground Level';
+    }
+    weatherCard = decorateWeatherCardProperty(weatherCard, property);
+    weatherCard = decorateWeatherCardValues(weatherCard, property);
+    return weatherCard;
+}
+
+function createWeatherCard(type) {
+    const weatherCard = document.createElement('div');
+    weatherCard.classList.add('card', 'secondary-color');
+    if (type === 'A') {
+        weatherCard.classList.add('weather-card', 'container');
+    }
+    if (type === 'B') {
+        weatherCard.classList.add('container-top');
+    }
+    return weatherCard;
+}
+
+function buildWeatherCard(weatherCard) {
+    document.querySelector('#main-content').appendChild(weatherCard);
+}
+
 function setWeatherCardsA() {
-    const cards = ['wind', 'clouds', 'rain', 'snow'];
-    for (let card of cards) {
-        if (card in data) {
-            createWeatherCardA(property);
+    const properties = ['wind', 'clouds', 'rain', 'snow', 'pressure'];
+    for (let property of properties) {
+        if (property in data || property in data.main) {
+            let weatherCard = createWeatherCard('A');
+            weatherCard = decorateWeatherCard(weatherCard, property);
+            buildWeatherCard(weatherCard);
         }
     }
 }
 
-function weatherCardBFactory(callBack, cards) {
-    let weatherCard = createWeatherCardB();
-    for (let card of cards) {
-        weatherCard = callBack(weatherCard, card);
+// function setWeatherCardB(callBack, properties) {
+//     let weatherCard = createWeatherCard();
+//     for (let property of properties) {
+//         weatherCard = callBack(weatherCard, property);
+//     }
+//     buildWeatherCard(weatherCard);
+// }
+
+function setWeatherCardB(weatherCard, properties) {
+    for (property of properties) {
+        weatherCard = decorateWeatherCard(weatherCard, property);
     }
-    buildWeatherCard(weatherCard);
+    return weatherCard;
 }
 
 function setWeatherCardsB() {
-    let cards = ['pressure', 'sea_level', 'grnd_level'];
-    weatherCardBFactory((weatherCard, card) => {
-        if (card in data.main) {
-            weatherCard = addWeatherCardProperty(weatherCard, property);
-        }
-        return weatherCard;
-    }, cards);
+    // setWeatherCardB((weatherCard, property) => {
+    //     if (property in data.main) {
+    //         weatherCard = decorateWeatherCard(weatherCard, property);
+    //     }
+    //     return weatherCard;
+    // }, ['sea_level', 'grnd_level']);
 
-    cards = ['humidity', 'sunrise', 'sunset'];
-    weatherCardBFactory((weatherCard, card) => {
-        if (card in data.sys || card in data.main) {
-            weatherCard = addWeatherCardProperty(weatherCard, property);
-        }
-        return weatherCard;
-    }, cards);
+    // setWeatherCardB((weatherCard, property) => {
+    //     if (property in data.sys || property in data.main) {
+    //         weatherCard = decorateWeatherCard(weatherCard, property);
+    //     }
+    //     return weatherCard;
+    // }, ['humidity', 'sunrise', 'sunset']);
+
+    let weatherCard;
+    if ('sea_level' in data.main || 'grnd_level' in data.main) {
+        weatherCard = createWeatherCard('B');
+        weatherCard = setWeatherCardB(weatherCard, ['sea_level', 'grnd_level']);
+        buildWeatherCard(weatherCard);
+    }
+
+    if ('humidity' in data.main || 'sunrise' in data.sys || 'sunset' in data.sys) {
+        weatherCard = createWeatherCard();
+        weatherCard = setWeatherCardB(weatherCard, ['humidity', 'sunrise', 'sunset']);
+        buildWeatherCard(weatherCard);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -132,5 +368,6 @@ document.addEventListener('DOMContentLoaded', function() {
         setTopBar();
         setWeatherTemperature();
         setWeatherCardsA();
+        setWeatherCardsB();
     });
 });

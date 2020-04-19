@@ -1,4 +1,26 @@
-.vr {
+.card {
+    border: 1px solid #00B1FF;
+    border-radius: 12px;
+}
+
+.pipe {
     border-left: 1px solid #ffffff;
-    height: 80%;
+    height: 60%;
+}
+
+.weather-card-icon {
+    width: 35px;
+    height: 35px;
+    margin-right: 2vw;
+}
+
+.weather-card {
+    width: 80vw;
+    height: 8vh;
+    margin-top: 5vh;
+    justify-content: space-evenly;
+}
+
+.weather-card-simple {
+    width: 65vw;
 }
