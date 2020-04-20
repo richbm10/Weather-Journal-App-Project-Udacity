@@ -1,16 +1,20 @@
-body {
-    font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
-    font-size: 16px;
-    color: #FFFFFF;
-}
-
 span {
-    font-size: 0.75em;
+    font-size: 0.85em;
 }
 
 h1 {
     margin: 0;
     font-size: 3.5em;
+}
+
+.base-font {
+    font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+    font-size: 16px;
+    color: #FFFFFF;
+}
+
+.base-font::placeholder {
+    color: #FFFFFF;
 }
 
 .primary-color {
@@ -19,6 +23,14 @@ h1 {
 
 .secondary-color {
     background-color: #00B1FF;
+}
+
+.third-color {
+    background-color: #1BC861;
+}
+
+.fourth-color {
+    background-color: #CB516E;
 }
 
 @media only screen and (min-width: 375px) {}

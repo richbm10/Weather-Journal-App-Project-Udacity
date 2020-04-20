@@ -8,7 +8,7 @@
     <title>Weather Journal App</title>
 </head>
 
-<body class="primary-color">
+<body class="primary-color base-font">
     <div id="top-bar" class="container secondary-color">
         <b id="location"></b>
 
@@ -39,11 +39,24 @@
                 </div>
             </div>
 
-            <div class="button secondary-color">
-                Locations
-            </div>
+            <button id="change-location" class="button third-color base-font">Change Location</button>
         </div>
     </main>
+
+    <div id="zip-code-alert" class="card secondary-color unactive-zip-code-alert">
+        <b id="zip-code-alert-label">Change Location</b>
+
+        <form id="zip-code-alert-form">
+            <input id="zip-code-alert-input" class="card primary-color base-font" type="text" name="countryCode" placeholder="ISO country code"> <br /> <br />
+            <input id="zip-code-alert-input" class="card primary-color base-font" type="number" name="zipCode" placeholder="ZIP code">
+        </form>
+
+        <div class="zip-code-alert-buttons container">
+            <button id="close" class="button zip-code-alert-button fourth-color base-font">Close</button>
+
+            <button id="enter" class="button zip-code-alert-button third-color base-font">Enter</button>
+        </div>
+    </div>
 
     <script src="./app/app-test.js"></script>
 </body>

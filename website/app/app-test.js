@@ -59,7 +59,24 @@ const icons = {
     'Pressure': 'pressure.svg'
 };
 
-const weatherCardsA = new Set(['rain', 'wind', 'clouds', 'snow']);
+const weatherCardsA = new Set(['Rain', 'Wind', 'Clouds', 'Snow', 'Pressure']);
+
+const setPageData = (response) => {
+    data = response;
+    console.log('data', data);
+    setTopBar();
+    setWeatherTemperature();
+    setWeatherCardsA();
+    setWeatherCardsB();
+};
+
+function deleteWeatherCards() {
+    const cards = document.querySelectorAll('.weather-card');
+    for (card of cards) {
+        console.log(card.innerHTML);
+        card.remove();
+    }
+}
 
 function startMeasure() {
     return performance.now();
@@ -192,7 +209,6 @@ function utcToLocalTime(utc) {
 
 function addRowValue(property) {
     const value = document.createElement('span');
-
     switch (property) {
         case 'Sea Level':
             value.textContent = `${data.main.sea_level} hPa`;
@@ -270,9 +286,8 @@ function decorateWeatherCardValues(weatherCard, property) {
     if (property === 'Clouds' || property === 'Pressure') {
         weatherCard = decorateSingleCol(weatherCard, property);
     }
-    if (property === 'Humidity' || property === 'Sunsire' ||
+    if (property === 'Humidity' || property === 'Sunrise' ||
         property === 'Sunset' || property === 'Sea Level' || property === 'Ground Level') {
-        console.log('decorateWeatherCardValues', weatherCard.outerHTML);
         weatherCard = decorateSingleRow(weatherCard, property);
     }
     return weatherCard;
@@ -309,8 +324,8 @@ function createWeatherCard(type) {
     return weatherCard;
 }
 
-function buildWeatherCard(weatherCard) {
-    document.querySelector('#main-content').appendChild(weatherCard);
+function buildHtmlMainElement(element) {
+    document.querySelector('#main-content').appendChild(element);
 }
 
 function setWeatherCardsA() {
@@ -319,18 +334,10 @@ function setWeatherCardsA() {
         if (property in data || property in data.main) {
             let weatherCard = createWeatherCard('A');
             weatherCard = decorateWeatherCardRow(weatherCard, property);
-            buildWeatherCard(weatherCard);
+            buildHtmlMainElement(weatherCard);
         }
     }
 }
-
-// function setWeatherCardB(callBack, properties) {
-//     let weatherCard = createWeatherCard();
-//     for (let property of properties) {
-//         weatherCard = callBack(weatherCard, property);
-//     }
-//     buildWeatherCard(weatherCard);
-// }
 
 function createWeatherCardRow() {
     const row = document.createElement('div');
@@ -339,48 +346,73 @@ function createWeatherCardRow() {
 }
 
 function setWeatherCardB(weatherCard, properties) {
-    for (property of properties) {
+    for (let i = 0; i < properties.length; i++) {
+        const property = properties[i];
         row = decorateWeatherCardRow(createWeatherCardRow(), property);
         weatherCard.appendChild(row);
+
+        if (i < properties.length - 1) {
+            const div = document.createElement('div');
+            div.classList.add('container');
+            const div1 = document.createElement('div');
+            const div2 = document.createElement('div');
+            div1.classList.add('row-line');
+            div2.classList.add('row-line');
+            div.appendChild(div1);
+            div.appendChild(div2);
+            weatherCard.appendChild(div);
+        }
     }
     return weatherCard;
 }
 
 function setWeatherCardsB() {
-    // setWeatherCardB((weatherCard, property) => {
-    //     if (property in data.main) {
-    //         weatherCard = decorateWeatherCard(weatherCard, property);
-    //     }
-    //     return weatherCard;
-    // }, ['sea_level', 'grnd_level']);
-
-    // setWeatherCardB((weatherCard, property) => {
-    //     if (property in data.sys || property in data.main) {
-    //         weatherCard = decorateWeatherCard(weatherCard, property);
-    //     }
-    //     return weatherCard;
-    // }, ['humidity', 'sunrise', 'sunset']);
-
     let weatherCard;
     if ('sea_level' in data.main || 'grnd_level' in data.main) {
         weatherCard = createWeatherCard('B');
         weatherCard = setWeatherCardB(weatherCard, ['sea_level', 'grnd_level']);
-        buildWeatherCard(weatherCard);
+        buildHtmlMainElement(weatherCard);
     }
 
     if ('humidity' in data.main || 'sunrise' in data.sys || 'sunset' in data.sys) {
         weatherCard = createWeatherCard('B');
         weatherCard = setWeatherCardB(weatherCard, ['humidity', 'sunrise', 'sunset']);
-        buildWeatherCard(weatherCard);
+        buildHtmlMainElement(weatherCard);
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    currentWeatherByZipCode('94040', 'us').then(response => {
-        data = response;
-        setTopBar();
-        setWeatherTemperature();
-        setWeatherCardsA();
-        setWeatherCardsB();
+const activateAlert = () => {
+    const main = document.querySelector('#main');
+    main.style.opacity = '0.2';
+    const alert = document.querySelector('#zip-code-alert');
+    alert.classList.remove('unactive-zip-code-alert');
+    alert.classList.add('active-zip-code-alert');
+}
+
+const deactivateAlert = () => {
+    const main = document.querySelector('#main');
+    main.style.opacity = '1';
+    const alert = document.querySelector('#zip-code-alert');
+    alert.classList.remove('active-zip-code-alert');
+    alert.classList.add('unactive-zip-code-alert');
+};
+
+function setChangeLocationListener() {
+    document.querySelector('#close').addEventListener('click', deactivateAlert);
+
+    document.querySelector('#enter').addEventListener('click', () => {
+        deleteWeatherCards();
+        deactivateAlert();
+        const zipCodeAlertForm = document.querySelector('#zip-code-alert-form');
+        const zipCode = zipCodeAlertForm.zipCode.value;
+        const countryCode = zipCodeAlertForm.countryCode.value;
+        currentWeatherByZipCode(zipCode, countryCode).then(setPageData);
     });
+
+    document.querySelector('#change-location').addEventListener('click', activateAlert);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    setChangeLocationListener();
+    currentWeatherByZipCode('94040', 'us').then(setPageData);
 });

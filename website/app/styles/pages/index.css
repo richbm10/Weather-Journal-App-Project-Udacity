@@ -3,6 +3,7 @@
 @import "../components/top-bar.css";
 @import "../components/button.css";
 @import "../components/weather-card.css";
+@import "../components/zip-code-alert.css";
 html {
     scroll-behavior: smooth;
 }
@@ -13,8 +14,6 @@ body {
     grid-template-columns: 1fr 80vw 1fr;
     grid-template-rows: 1fr;
     grid-template-areas: "main main main";
-    transition: margin-right 0.7s;
-    width: 100%;
 }
 
 .temp-container {

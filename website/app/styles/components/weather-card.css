@@ -5,7 +5,13 @@
 
 .pipe {
     border-left: 1px solid #ffffff;
-    height: 60%;
+    height: 4vh;
+}
+
+.row-line {
+    border-top: 1px solid #ffffff;
+    width: 15vw;
+    margin: 1.5vh 5vw;
 }
 
 .weather-card-icon {
