@@ -40,9 +40,9 @@ function currentWeatherByZipCode(zipCode, countryCode) {
     return getRequestAPI(query);
 }
 
-function addWeatherFeelings(weather, feeling) {
+function addWeatherFeelings(feelings) {
     const query = 'http://localhost:8000/weather/post/addWeatherFeelings';
-    return postRequestLocalServer(query, {...weather, feeling });
+    return postRequestLocalServer(query, {...data, feelings });
 }
 
 //Dynamic UI
@@ -70,10 +70,11 @@ const setPageData = (response) => {
     setWeatherCardsB();
 };
 
-function deleteWeatherCards() {
+function resetData() {
+    resetTopBar();
+    resetWeatherTemperature();
     const cards = document.querySelectorAll('.weather-card');
     for (card of cards) {
-        console.log(card.innerHTML);
         card.remove();
     }
 }
@@ -105,6 +106,11 @@ function setTopBar() {
     locationIcon.style.display = 'block';
 }
 
+function resetTopBar() {
+    const location = document.querySelector('#location');
+    location.textContent = '';
+}
+
 function setWeatherTemperature() {
     const [time, weatherIcon, temperature, feelsLike, weatherMain] = document.querySelectorAll(
         '#time, #weather-icon, #temperature, #feels-like, #weather-main'
@@ -120,6 +126,16 @@ function setWeatherTemperature() {
     weatherMain.textContent = data.weather[0].description;
     maxTemperature.textContent = `${data.main.temp_max}° max`;
     minTemperature.textContent = `${data.main.temp_min}° min`;
+}
+
+function resetWeatherTemperature() {
+    const elements = document.querySelectorAll(
+        '#time, #temperature, #feels-like, #weather-main, #max-temperature, #min-temperature'
+    );
+    document.querySelector('#weather-icon').removeAttribute('src');
+    for (element of elements) {
+        element.textContent = '';
+    }
 }
 
 function addPipe(weatherCard) {
@@ -381,38 +397,64 @@ function setWeatherCardsB() {
     }
 }
 
-const activateAlert = () => {
+
+function activateAlert(alert) {
     const main = document.querySelector('#main');
     main.style.opacity = '0.2';
-    const alert = document.querySelector('#zip-code-alert');
-    alert.classList.remove('unactive-zip-code-alert');
-    alert.classList.add('active-zip-code-alert');
+    alert.classList.remove('unactive-alert');
+    alert.classList.add('active-alert');
+}
+
+const activateErrorAlert = () => {
+    resetData();
+    document.querySelector('#error-message').textContent = `${data.cod} ${toTitleCase(data.message)}`;
+    activateAlert(document.querySelector('#error-alert'));
 }
 
 const deactivateAlert = () => {
     const main = document.querySelector('#main');
     main.style.opacity = '1';
-    const alert = document.querySelector('#zip-code-alert');
-    alert.classList.remove('active-zip-code-alert');
-    alert.classList.add('unactive-zip-code-alert');
+    const alerts = document.querySelectorAll('#zip-code-alert, #error-alert');
+    for (let alert of alerts) {
+        alert.classList.remove('active-alert');
+        alert.classList.add('unactive-alert');
+    }
 };
 
-function setChangeLocationListener() {
-    document.querySelector('#close').addEventListener('click', deactivateAlert);
+function setGenerateListener() {
+    document.querySelector('#generate').addEventListener('click', () => {
+        const feelingsForm = document.querySelector('#feelings-form');
+        const feelings = feelingsForm.feelings.value;
+        addWeatherFeelings(feelings).then(() => {
+            feelingsForm.feelings.value = '';
+        }).catch(activateErrorAlert);
+    });
+}
 
-    document.querySelector('#enter').addEventListener('click', () => {
-        deleteWeatherCards();
+function setChangeLocationListener() {
+    document.querySelector('#close-zip-code').addEventListener('click', deactivateAlert);
+
+    document.querySelector('#enter-zip-code').addEventListener('click', () => {
+        resetData();
         deactivateAlert();
         const zipCodeAlertForm = document.querySelector('#zip-code-alert-form');
         const zipCode = zipCodeAlertForm.zipCode.value;
         const countryCode = zipCodeAlertForm.countryCode.value;
-        currentWeatherByZipCode(zipCode, countryCode).then(setPageData);
+        currentWeatherByZipCode(zipCode, countryCode).then(setPageData).catch(activateErrorAlert);
     });
 
-    document.querySelector('#change-location').addEventListener('click', activateAlert);
+    document.querySelector('#change-location').addEventListener('click', () => {
+        activateAlert(document.querySelector('#zip-code-alert'));
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    setGenerateListener();
     setChangeLocationListener();
-    currentWeatherByZipCode('94040', 'us').then(setPageData);
+    document.querySelector('#error-alert-close').addEventListener('click', deactivateAlert);
+
+    const zipCodeAlertForm = document.querySelector('#zip-code-alert-form');
+    zipCodeAlertForm.zipCode.value = '94040';
+    zipCodeAlertForm.countryCode.value = 'abcd';
+    currentWeatherByZipCode(zipCodeAlertForm.zipCode.value, zipCodeAlertForm.countryCode.value).then(setPageData).catch(activateErrorAlert);
 });

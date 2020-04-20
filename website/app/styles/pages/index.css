@@ -3,7 +3,9 @@
 @import "../components/top-bar.css";
 @import "../components/button.css";
 @import "../components/weather-card.css";
+@import "../components/alert.css";
 @import "../components/zip-code-alert.css";
+@import "../components/error-alert.css";
 html {
     scroll-behavior: smooth;
 }
@@ -52,6 +54,28 @@ body {
 
 #feels-like {
     width: 150%;
+}
+
+#feelings-form {
+    margin-top: 5vh;
+    border: none;
+    padding: 1%;
+}
+
+#feelings-input {
+    overflow: auto;
+    outline: none;
+    padding: 2% 0% 0% 5%;
+}
+
+#generate {
+    width: 70vw;
+    margin: 2% 0%;
+}
+
+#change-location {
+    width: 80vw;
+    margin-top: 5vh;
 }
 
 @media(min-width: 768px) {

@@ -8,14 +8,6 @@
     grid-area: button;
 }
 
-.active-zip-code-alert {
-    left: 10%;
-}
-
-.unactive-zip-code-alert {
-    left: -100%;
-}
-
 #zip-code-alert {
     position: fixed;
     z-index: 1;
@@ -31,13 +23,6 @@
     width: 60vw;
     height: 5vh;
     padding-left: 5%;
-}
-
-#zip-code-alert-label {
-    grid-area: label;
-    align-self: center;
-    justify-self: center;
-    font-size: 1.2em;
 }
 
 #zip-code-alert-form {

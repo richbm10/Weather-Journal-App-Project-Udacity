@@ -1,0 +1,15 @@
+.alert-label {
+    grid-area: label;
+    align-self: center;
+    justify-self: center;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.active-alert {
+    left: 10vw;
+}
+
+.unactive-alert {
+    left: -100vw;
+}
