@@ -1,10 +1,11 @@
 //Service
 
-const baseURL = 'http://api.openweathermap.org/data/2.5/weather?';
+const baseApiURL = 'http://api.openweathermap.org/data/2.5/weather?';
+const baseLocalServerURL = 'http://localhost:8000';
 const apiKey = '&appid=be40e6c98cb3c7bdec82f9dbba07c905';
 let data = {};
 
-function setHttpOptions(httpMethod, httpBodyData) {
+function setHttp(httpMethod, httpBodyData) {
     return {
         method: httpMethod,
         credentials: 'same-origin',
@@ -16,7 +17,7 @@ function setHttpOptions(httpMethod, httpBodyData) {
 }
 
 const getRequestAPI = async(query) => {
-    const response = await fetch(baseURL + query + apiKey);
+    const response = await fetch(baseApiURL + query + apiKey);
     try {
         const data = await response.json();
         return data;
@@ -26,10 +27,10 @@ const getRequestAPI = async(query) => {
 };
 
 const postRequestLocalServer = async(query, data = {}) => {
-    const response = await fetch(query, setHttpOptions('POST', data));
+    const response = await fetch(baseLocalServerURL + query, setHttp('POST', data));
     try {
-        const newData = await response.json();
-        return newData;
+        const data = await response.json();
+        return data;
     } catch (error) {
         console.log("error", error);
     }
@@ -41,7 +42,7 @@ function currentWeatherByZipCode(zipCode, countryCode) {
 }
 
 function addWeatherFeelings(feelings) {
-    const query = 'http://localhost:8000/weather/post/addWeatherFeelings';
+    const query = '/weather/post/addWeatherFeelings';
     return postRequestLocalServer(query, {...data, feelings });
 }
 
@@ -62,8 +63,8 @@ const icons = {
 const weatherCardsA = new Set(['Rain', 'Wind', 'Clouds', 'Snow', 'Pressure']);
 
 const setPageData = (response) => {
+    console.log('ME GUSTA PRI');
     data = response;
-    console.log('data', data);
     setTopBar();
     setWeatherTemperature();
     setWeatherCardsA();
@@ -405,16 +406,15 @@ function activateAlert(alert) {
     alert.classList.add('active-alert');
 }
 
-const activateErrorAlert = () => {
-    resetData();
-    document.querySelector('#error-message').textContent = `${data.cod} ${toTitleCase(data.message)}`;
-    activateAlert(document.querySelector('#error-alert'));
+function activateMessageAlert(cod, message) {
+    document.querySelector('#alert-message').textContent = `${cod} ${toTitleCase(message)}`;
+    activateAlert(document.querySelector('#alert'));
 }
 
 const deactivateAlert = () => {
     const main = document.querySelector('#main');
     main.style.opacity = '1';
-    const alerts = document.querySelectorAll('#zip-code-alert, #error-alert');
+    const alerts = document.querySelectorAll('#zip-code-alert, #alert');
     for (let alert of alerts) {
         alert.classList.remove('active-alert');
         alert.classList.add('unactive-alert');
@@ -425,9 +425,12 @@ function setGenerateListener() {
     document.querySelector('#generate').addEventListener('click', () => {
         const feelingsForm = document.querySelector('#feelings-form');
         const feelings = feelingsForm.feelings.value;
-        addWeatherFeelings(feelings).then(() => {
+        addWeatherFeelings(feelings).then((response) => {
+            console.log(response);
             feelingsForm.feelings.value = '';
-        }).catch(activateErrorAlert);
+        }).catch(() => {
+            activateMessageAlert('503', 'Server Error Connection');
+        });
     });
 }
 
@@ -435,12 +438,15 @@ function setChangeLocationListener() {
     document.querySelector('#close-zip-code').addEventListener('click', deactivateAlert);
 
     document.querySelector('#enter-zip-code').addEventListener('click', () => {
-        resetData();
+        //resetData();
         deactivateAlert();
         const zipCodeAlertForm = document.querySelector('#zip-code-alert-form');
         const zipCode = zipCodeAlertForm.zipCode.value;
         const countryCode = zipCodeAlertForm.countryCode.value;
-        currentWeatherByZipCode(zipCode, countryCode).then(setPageData).catch(activateErrorAlert);
+        currentWeatherByZipCode(zipCode, countryCode).then(setPageData).catch(() => {
+            //resetData();
+            activateMessageAlert(data.cod, data.message);
+        });
     });
 
     document.querySelector('#change-location').addEventListener('click', () => {
@@ -451,10 +457,13 @@ function setChangeLocationListener() {
 document.addEventListener('DOMContentLoaded', function() {
     setGenerateListener();
     setChangeLocationListener();
-    document.querySelector('#error-alert-close').addEventListener('click', deactivateAlert);
+    document.querySelector('#alert-close').addEventListener('click', deactivateAlert);
 
     const zipCodeAlertForm = document.querySelector('#zip-code-alert-form');
     zipCodeAlertForm.zipCode.value = '94040';
     zipCodeAlertForm.countryCode.value = 'abcd';
-    currentWeatherByZipCode(zipCodeAlertForm.zipCode.value, zipCodeAlertForm.countryCode.value).then(setPageData).catch(activateErrorAlert);
+    currentWeatherByZipCode(zipCodeAlertForm.zipCode.value, zipCodeAlertForm.countryCode.value).then(setPageData).catch(() => {
+        //resetData();
+        activateMessageAlert(data.cod, data.message);
+    });
 });

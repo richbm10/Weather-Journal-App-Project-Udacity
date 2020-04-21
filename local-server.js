@@ -25,6 +25,11 @@ const server = app.listen(port, () => {
 
 const projectData = {};
 
+const confirmationMessage = {
+    code: 200,
+    message: 'Success'
+};
+
 app.get('/', function(request, response) {
     response.send('hello world')
 });
@@ -35,6 +40,8 @@ app.get('/all', function(request, response) {
 
 app.post('/weather/post/addWeatherFeelings', function(request, response) {
     addProjectData(request.body);
+    console.log('projectData:', projectData);
+    response.send(confirmationMessage);
 });
 
 function addProjectData(data) {
@@ -42,9 +49,8 @@ function addProjectData(data) {
         projectData[data.id].feelings.push(data.feeling);
     } else {
         const weather = Object.assign({}, data);
-        weather.feelings = [weather.feeling];
-        delete weather.feeling;
-        console.log(weather);
+        weather.allFeelings = [weather.feelings];
+        delete weather.feelings;
         projectData[data.id] = weather;
     }
 }

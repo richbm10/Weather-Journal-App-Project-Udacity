@@ -5,7 +5,6 @@
 @import "../components/weather-card.css";
 @import "../components/alert.css";
 @import "../components/zip-code-alert.css";
-@import "../components/error-alert.css";
 html {
     scroll-behavior: smooth;
 }

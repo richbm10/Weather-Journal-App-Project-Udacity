@@ -44,7 +44,7 @@
             <form id="feelings-form" class="card container-top secondary-color">
                 <textarea id="feelings-input" class="card primary-color base-font" name="feelings" placeholder="How you feel the weather?" rows="9" cols="32"></textarea>
 
-                <input id="generate" type="submit" class="button third-color base-font" value="Submit">
+                <button id="generate" class="button third-color base-font" type="button">Submit</button>
             </form>
         </div>
     </main>
@@ -64,10 +64,10 @@
         </div>
     </div>
 
-    <div id="error-alert" class="card secondary-color unactive-alert">
-        <b id="error-message" class="alert-label"></b>
+    <div id="alert" class="card secondary-color unactive-alert">
+        <b id="alert-message" class="alert-label"></b>
 
-        <button id="error-alert-close" class="button fourth-color base-font">Close</button>
+        <button id="alert-close" class="button fourth-color base-font">Close</button>
     </div>
 
     <script src="./app/app-test.js"></script>
