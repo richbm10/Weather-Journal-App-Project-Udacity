@@ -58,7 +58,7 @@ function addProjectData(data) {
 
 function logActivatedService(service, requestLog, responseLog) {
     console.log(service);
-    console.log('\nBody Request:', requestLog);
-    console.log('\nBody Response:', responseLog);
+    console.log('\nBody Request:\n', requestLog);
+    console.log('\nBody Response:\n', responseLog);
     logActiveServer();
 }

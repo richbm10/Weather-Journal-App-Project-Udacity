@@ -1,3 +1,76 @@
+//Services
+const WeatherServicesSingleton = (function() {
+    let instance;
+    return {
+        getInstance: () => {
+            if (!instance) {
+                instance = {
+                    apiKey: '',
+                    baseApiURL: '',
+                    baseLocalServerURL: '',
+                    weatherData: {},
+                    set: function(pApiKey, pBaseApiURL, pBaseLocalServerURL) {
+                        this.apiKey = pApiKey;
+                        this.baseApiURL = pBaseApiURL;
+                        this.baseLocalServerURL = pBaseLocalServerURL;
+                    },
+                    setHttpRequest: function(httpMethod, httpBodyData) {
+                        return {
+                            method: httpMethod,
+                            credentials: 'same-origin',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(httpBodyData)
+                        };
+                    },
+                    getRequestAPI: async function(query) {
+                        const response = await fetch(this.baseApiURL + query + this.apiKey);
+                        try {
+                            const data = await response.json();
+                            return data;
+                        } catch (error) {
+                            console.log("error", error);
+                        }
+                    },
+                    postRequestLocalServer: async function(query, data = {}) {
+                        const response = await fetch(this.baseLocalServerURL + query, this.setHttpRequest('POST', data));
+                        try {
+                            const resData = await response.json();
+                            return resData;
+                        } catch (error) {
+                            console.log("error", error);
+                        }
+                    },
+                    queryWeatherByZipCode: function(zipCode, countryCode) {
+                        return `zip=${zipCode},${countryCode}`;
+                    },
+                    queryAddWeatherFeelings: '/weather/post/addWeatherFeelings',
+                    handleResponse: function(response, callBack) {
+                        response.cod = `${response.cod}`;
+                        this.weatherData = response;
+                        switch (true) {
+                            case response.cod >= '200' && response.cod < '300':
+                                callBack();
+                                break;
+                            case response.cod >= '400' && response.cod < '500':
+                                throw response.message;
+                            default:
+                                break;
+                        }
+                    }
+                };
+            }
+            return instance;
+        }
+    };
+})();
+
+const webServices = WeatherServicesSingleton.getInstance();
+webServices.set('&appid=be40e6c98cb3c7bdec82f9dbba07c905', 'http://api.openweathermap.org/data/2.5/weather?', 'http://localhost:8000');
+
+//Dynamic HTML
+
 const iconsPath = './assets/icons/';
 const icons = {
     'Rain': 'water.svg',
@@ -13,25 +86,22 @@ const icons = {
 
 const weatherCardsA = new Set(['Rain', 'Wind', 'Clouds', 'Snow', 'Pressure']);
 
-const setPageData = () => {
-    resetPageData();
-    setTopBar();
-    setWeatherTemperature();
-    setWeatherCardsA();
-    setWeatherCardsB();
-};
+//Dynamic HTML-General Functions
 
-function resetPageData() {
-    resetTopBar();
-    resetWeatherTemperature();
-    const cards = document.querySelectorAll('.weather-card');
-    for (card of cards) {
-        card.remove();
-    }
+function utcToLocalTime(utc) {
+    return (new Date(utc * 1000)).toLocaleTimeString(); //From https://stackoverflow.com/users/2030565/jasen
 }
 
+const toTitleCase = (phrase) => {
+    return phrase
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+};
+
 function getTimeZone() {
-    const locationTimeZoneOffset = data.timezone;
+    const locationTimeZoneOffset = webServices.weatherData.timezone;
     const date = new Date();
     const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
 
@@ -39,45 +109,6 @@ function getTimeZone() {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
 
     return locationDate.toLocaleDateString('en-US', options);
-}
-
-function setTopBar() {
-    const location = document.querySelector('#location');
-    const locationIcon = document.querySelector('#location-icon');
-    location.textContent = data.name;
-    locationIcon.style.display = 'block';
-}
-
-function resetTopBar() {
-    const location = document.querySelector('#location');
-    location.textContent = '';
-}
-
-function setWeatherTemperature() {
-    const [time, weatherIcon, temperature, feelsLike, weatherMain] = document.querySelectorAll(
-        '#time, #weather-icon, #temperature, #feels-like, #weather-main'
-    );
-    const [maxTemperature, minTemperature] = document.querySelectorAll(
-        '#max-temperature, #min-temperature'
-    );
-
-    time.textContent = getTimeZone();
-    weatherIcon.setAttribute('src', `${iconsPath}climate.svg`);
-    temperature.textContent = `${data.main.temp}°`;
-    feelsLike.textContent = `Feels like ${data.main.feels_like}°`;
-    weatherMain.textContent = data.weather[0].description;
-    maxTemperature.textContent = `${data.main.temp_max}° max`;
-    minTemperature.textContent = `${data.main.temp_min}° min`;
-}
-
-function resetWeatherTemperature() {
-    const elements = document.querySelectorAll(
-        '#time, #temperature, #feels-like, #weather-main, #max-temperature, #min-temperature'
-    );
-    document.querySelector('#weather-icon').removeAttribute('src');
-    for (element of elements) {
-        element.textContent = '';
-    }
 }
 
 function addPipe(weatherCard) {
@@ -102,27 +133,6 @@ function addPropertyContent(propertyElement, property) {
     return propertyElement;
 }
 
-function decorateWeatherCardProperty(weatherCard, property) {
-    const div = document.createElement('div');
-    div.classList.add('container-left');
-
-    const icon = document.createElement('img');
-    icon.classList.add('weather-card-icon');
-    icon.setAttribute('src', iconsPath + icons[property]);
-    div.appendChild(icon);
-
-    const propertyElement = document.createElement('div');
-    div.appendChild(addPropertyContent(propertyElement, property));
-
-    weatherCard.appendChild(div);
-
-    if (weatherCardsA.has(property)) {
-        weatherCard = addPipe(weatherCard);
-    }
-
-    return weatherCard;
-}
-
 function addValue(weatherCard, tag, value) {
     const valueContainer = document.createElement('div');
     valueContainer.classList.add('container-top');
@@ -137,51 +147,23 @@ function addValue(weatherCard, tag, value) {
     return weatherCard;
 }
 
-function setColValues(property) {
-    const valueColA = document.createElement('span');
-    const valueColB = document.createElement('span');
-
-    switch (property) {
-        case 'Snow':
-            valueColA.textContent = `${data.snow['1h']}%`;
-            valueColB.textContent = `${data.snow['3h']}%`;
-            break;
-        case 'Rain':
-            valueColA.textContent = `${data.rain['1h']}%`;
-            valueColB.textContent = `${data.rain['3h']}%`;
-            break;
-        case 'Wind':
-            valueColA.textContent = `${data.wind.speed} m/s`;
-            valueColB.textContent = `${data.wind.deg}°`;
-            break;
-        default:
-            break;
-    }
-
-    return [valueColA, valueColB];
-}
-
-function utcToLocalTime(utc) {
-    return (new Date(utc * 1000)).toLocaleTimeString(); //From https://stackoverflow.com/users/2030565/jasen
-}
-
 function addRowValue(property) {
     const value = document.createElement('span');
     switch (property) {
         case 'Sea Level':
-            value.textContent = `${data.main.sea_level} hPa`;
+            value.textContent = `${webServices.weatherData.main.sea_level} hPa`;
             break;
         case 'Ground Level':
-            value.textContent = `${data.main.grnd_level} hPa`;
+            value.textContent = `${webServices.weatherData.main.grnd_level} hPa`;
             break;
         case 'Humidity':
-            value.textContent = `${data.main.humidity}%`;
+            value.textContent = `${webServices.weatherData.main.humidity}%`;
             break;
         case 'Sunrise':
-            value.textContent = utcToLocalTime(data.sys.sunrise);
+            value.textContent = utcToLocalTime(webServices.weatherData.sys.sunrise);
             break;
         case 'Sunset':
-            value.textContent = utcToLocalTime(data.sys.sunset);
+            value.textContent = utcToLocalTime(webServices.weatherData.sys.sunset);
             break;
         default:
             break;
@@ -207,6 +189,32 @@ function addColValues(weatherCard, property, ...values) {
     return weatherCard;
 }
 
+function setColValues(property) {
+    const valueColA = document.createElement('span');
+    const valueColB = document.createElement('span');
+
+    switch (property) {
+        case 'Snow':
+            valueColA.textContent = `${webServices.weatherData.snow['1h']}%`;
+            valueColB.textContent = `${webServices.weatherData.snow['3h']}%`;
+            break;
+        case 'Rain':
+            valueColA.textContent = `${webServices.weatherData.rain['1h']}%`;
+            valueColB.textContent = `${webServices.weatherData.rain['3h']}%`;
+            break;
+        case 'Wind':
+            valueColA.textContent = `${webServices.weatherData.wind.speed} m/s`;
+            valueColB.textContent = `${webServices.weatherData.wind.deg}°`;
+            break;
+        default:
+            break;
+    }
+
+    return [valueColA, valueColB];
+}
+
+//Dynamic HTML-Weather Cards Decorators
+
 function decorateDoubleCols(weatherCard, property) {
     const [valueColA, valueColB] = setColValues(property);
     weatherCard = addColValues(weatherCard, property, valueColA, valueColB);
@@ -217,10 +225,10 @@ function decorateDoubleCols(weatherCard, property) {
 function decorateSingleCol(weatherCard, property) {
     const value = document.createElement('div');
     if (property === 'Clouds') {
-        value.textContent = data.clouds.all + '%';
+        value.textContent = webServices.weatherData.clouds.all + '%';
     }
     if (property === 'Pressure') {
-        value.textContent = data.main.pressure + ' hPa';
+        value.textContent = webServices.weatherData.main.pressure + ' hPa';
     }
 
     weatherCard.appendChild(value);
@@ -251,15 +259,28 @@ function decorateWeatherCardValues(weatherCard, property) {
     return weatherCard;
 }
 
-const toTitleCase = (phrase) => {
-    return phrase
-        .toLowerCase()
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-};
+function decorateWeatherCardProperty(weatherCard, property) {
+    const div = document.createElement('div');
+    div.classList.add('container-left');
 
-function decorateWeatherCardRow(weatherCard, property) {
+    const icon = document.createElement('img');
+    icon.classList.add('weather-card-icon');
+    icon.setAttribute('src', iconsPath + icons[property]);
+    div.appendChild(icon);
+
+    const propertyElement = document.createElement('div');
+    div.appendChild(addPropertyContent(propertyElement, property));
+
+    weatherCard.appendChild(div);
+
+    if (weatherCardsA.has(property)) {
+        weatherCard = addPipe(weatherCard);
+    }
+
+    return weatherCard;
+}
+
+function decorateWeatherCard(weatherCard, property) {
     property = property.replace('_', ' ');
     property = toTitleCase(property);
     if (property === 'Grnd Level') {
@@ -269,6 +290,8 @@ function decorateWeatherCardRow(weatherCard, property) {
     weatherCard = decorateWeatherCardValues(weatherCard, property);
     return weatherCard;
 }
+
+//Dynamic HTML-Weather Card Creators
 
 function createWeatherCard(type) {
     const weatherCard = document.createElement('div');
@@ -282,31 +305,74 @@ function createWeatherCard(type) {
     return weatherCard;
 }
 
-function buildHtmlMainElement(element) {
-    document.querySelector('#main-content').appendChild(element);
-}
-
-function setWeatherCardsA() {
-    const properties = ['wind', 'clouds', 'rain', 'snow', 'pressure'];
-    for (let property of properties) {
-        if (property in data || property in data.main) {
-            let weatherCard = createWeatherCard('A');
-            weatherCard = decorateWeatherCardRow(weatherCard, property);
-            buildHtmlMainElement(weatherCard);
-        }
-    }
-}
-
 function createWeatherCardRow() {
     const row = document.createElement('div');
     row.classList.add('container', 'weather-card-row');
     return row;
 }
 
+//Dynamic HTML-Builder
+
+function buildHtmlMainElement(element) {
+    document.querySelector('#main-content').appendChild(element);
+}
+
+//Dynamic HTML-Set or Reset Page Content
+
+function setTopBar() {
+    const location = document.querySelector('#location');
+    const locationIcon = document.querySelector('#location-icon');
+    location.textContent = webServices.weatherData.name;
+    locationIcon.style.display = 'block';
+}
+
+function resetTopBar() {
+    const location = document.querySelector('#location');
+    location.textContent = '';
+}
+
+function setWeatherTemperature() {
+    const [time, weatherIcon, temperature, feelsLike, weatherMain] = document.querySelectorAll(
+        '#time, #weather-icon, #temperature, #feels-like, #weather-main'
+    );
+    const [maxTemperature, minTemperature] = document.querySelectorAll(
+        '#max-temperature, #min-temperature'
+    );
+
+    time.textContent = getTimeZone();
+    weatherIcon.setAttribute('src', `${iconsPath}climate.svg`);
+    temperature.textContent = `${webServices.weatherData.main.temp}°`;
+    feelsLike.textContent = `Feels like ${webServices.weatherData.main.feels_like}°`;
+    weatherMain.textContent = webServices.weatherData.weather[0].description;
+    maxTemperature.textContent = `${webServices.weatherData.main.temp_max}° max`;
+    minTemperature.textContent = `${webServices.weatherData.main.temp_min}° min`;
+}
+
+function resetWeatherTemperature() {
+    const elements = document.querySelectorAll(
+        '#time, #temperature, #feels-like, #weather-main, #max-temperature, #min-temperature'
+    );
+    document.querySelector('#weather-icon').removeAttribute('src');
+    for (element of elements) {
+        element.textContent = '';
+    }
+}
+
+function setWeatherCardsA() {
+    const properties = ['wind', 'clouds', 'rain', 'snow', 'pressure'];
+    for (let property of properties) {
+        if (property in webServices.weatherData || property in webServices.weatherData.main) {
+            let weatherCard = createWeatherCard('A');
+            weatherCard = decorateWeatherCard(weatherCard, property);
+            buildHtmlMainElement(weatherCard);
+        }
+    }
+}
+
 function setWeatherCardB(weatherCard, properties) {
     for (let i = 0; i < properties.length; i++) {
         const property = properties[i];
-        row = decorateWeatherCardRow(createWeatherCardRow(), property);
+        row = decorateWeatherCard(createWeatherCardRow(), property);
         weatherCard.appendChild(row);
 
         if (i < properties.length - 1) {
@@ -326,19 +392,37 @@ function setWeatherCardB(weatherCard, properties) {
 
 function setWeatherCardsB() {
     let weatherCard;
-    if ('sea_level' in data.main || 'grnd_level' in data.main) {
+    if ('sea_level' in webServices.weatherData.main || 'grnd_level' in webServices.weatherData.main) {
         weatherCard = createWeatherCard('B');
         weatherCard = setWeatherCardB(weatherCard, ['sea_level', 'grnd_level']);
         buildHtmlMainElement(weatherCard);
     }
 
-    if ('humidity' in data.main || 'sunrise' in data.sys || 'sunset' in data.sys) {
+    if ('humidity' in webServices.weatherData.main || 'sunrise' in webServices.weatherData.sys || 'sunset' in webServices.weatherData.sys) {
         weatherCard = createWeatherCard('B');
         weatherCard = setWeatherCardB(weatherCard, ['humidity', 'sunrise', 'sunset']);
         buildHtmlMainElement(weatherCard);
     }
 }
 
+const setPageData = () => {
+    resetPageData();
+    setTopBar();
+    setWeatherTemperature();
+    setWeatherCardsA();
+    setWeatherCardsB();
+};
+
+function resetPageData() {
+    resetTopBar();
+    resetWeatherTemperature();
+    const cards = document.querySelectorAll('.weather-card');
+    for (card of cards) {
+        card.remove();
+    }
+}
+
+//Dynamic HTML-Alert
 
 function activateAlert(alert) {
     const main = document.querySelector('#main');
@@ -362,19 +446,32 @@ const deactivateAlert = () => {
     }
 };
 
+//Dynamic HTML-Event Listeners
+
 function setGenerateListener() {
     document.querySelector('#generate').addEventListener('click', () => {
         const feelingsForm = document.querySelector('#feelings-form');
         const feelings = feelingsForm.feelings.value;
 
-        postRequestLocalServer(queryAddWeatherFeelings, {...data, feelings }).then((response) => {
-            handleResponse(response, () => {
+        const query = webServices.queryAddWeatherFeelings;
+
+        webServices.postRequestLocalServer(query, {...webServices.weatherData, feelings }).then((response) => {
+            webServices.handleResponse(response, () => {
                 feelingsForm.feelings.value = '';
                 activateMessageAlert('', 'Weather Personal Feelings Submitted');
             });
         }).catch(() => {
             activateMessageAlert('503', 'Server Error Connection');
         });
+
+        // postRequestLocalServer(queryAddWeatherFeelings, {...data, feelings }).then((response) => {
+        //     handleResponse(response, () => {
+        //         feelingsForm.feelings.value = '';
+        //         activateMessageAlert('', 'Weather Personal Feelings Submitted');
+        //     });
+        // }).catch(() => {
+        //     activateMessageAlert('503', 'Server Error Connection');
+        // });
     });
 }
 
@@ -386,11 +483,20 @@ function setChangeLocationListener() {
         const zipCodeAlertForm = document.querySelector('#zip-code-alert-form');
         const zipCode = zipCodeAlertForm.zipCode.value;
         const countryCode = zipCodeAlertForm.countryCode.value;
-        getRequestAPI(queryWeatherByZipCode(zipCode, countryCode)).then((response) => {
-            handleResponse(response, setPageData);
+
+        const query = webServices.queryWeatherByZipCode(zipCode, countryCode);
+        webServices.getRequestAPI(query).then((response) => {
+            webServices.handleResponse(response, setPageData);
         }).catch(() => {
-            activateMessageAlert(data.cod, data.message);
+            activateMessageAlert(webServices.weatherData.cod, webServices.weatherData.message);
         });
+
+
+        // getRequestAPI(queryWeatherByZipCode(zipCode, countryCode)).then((response) => {
+        //     handleResponse(response, setPageData);
+        // }).catch(() => {
+        //     activateMessageAlert(webServices.weatherData.cod, webServices.weatherData.message);
+        // });
     });
 
     document.querySelector('#change-location').addEventListener('click', () => {
