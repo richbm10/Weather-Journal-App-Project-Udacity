@@ -18,30 +18,31 @@ app.use(express.static('./website'));
 
 const port = 8000;
 
-const server = app.listen(port, () => {
+function logActiveServer() {
     console.log('Server running..');
     console.log(`localhost: ${port}`);
+}
+
+const server = app.listen(port, () => {
+    logActiveServer();
 });
 
 const projectData = {};
 
 const confirmationMessage = {
-    code: 200,
+    cod: 200,
     message: 'Success'
 };
 
-app.get('/', function(request, response) {
-    response.send('hello world')
+app.get('/all', (request, response) => {
+    response.send(projectData);
+    logActivatedService('HTTP GET Service: /all', request.body, projectData);
 });
 
-app.get('/all', function(request, response) {
-    response.send(projectData)
-});
-
-app.post('/weather/post/addWeatherFeelings', function(request, response) {
+app.post('/weather/post/addWeatherFeelings', (request, response) => {
     addProjectData(request.body);
-    console.log('projectData:', projectData);
     response.send(confirmationMessage);
+    logActivatedService('\nHTTP POST Service: /weather/post/addWeatherFeelings', request.body, confirmationMessage);
 });
 
 function addProjectData(data) {
@@ -53,4 +54,11 @@ function addProjectData(data) {
         delete weather.feelings;
         projectData[data.id] = weather;
     }
+}
+
+function logActivatedService(service, requestLog, responseLog) {
+    console.log(service);
+    console.log('\nBody Request:', requestLog);
+    console.log('\nBody Response:', responseLog);
+    logActiveServer();
 }

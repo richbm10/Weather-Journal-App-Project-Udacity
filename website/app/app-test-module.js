@@ -1,62 +1,3 @@
-//Service
-
-const baseApiURL = 'http://api.openweathermap.org/data/2.5/weather?';
-const baseLocalServerURL = 'http://localhost:8000';
-const apiKey = '&appid=be40e6c98cb3c7bdec82f9dbba07c905';
-let data = {};
-
-function setHttpRequest(httpMethod, httpBodyData) {
-    return {
-        method: httpMethod,
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(httpBodyData)
-    };
-}
-
-const getRequestAPI = async(query) => {
-    const response = await fetch(baseApiURL + query + apiKey);
-    try {
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.log("error", error);
-    }
-};
-
-const postRequestLocalServer = async(query, data = {}) => {
-    const response = await fetch(baseLocalServerURL + query, setHttpRequest('POST', data));
-    try {
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.log("error", error);
-    }
-};
-
-function queryWeatherByZipCode(zipCode, countryCode) {
-    return `zip=${zipCode},${countryCode}`;
-}
-
-const queryAddWeatherFeelings = '/weather/post/addWeatherFeelings';
-
-const handleResponse = (response, callBack) => {
-    data = response;
-    data.cod = `${response.cod}`;
-    switch (true) {
-        case data.cod >= '200' && data.cod < '300':
-            callBack();
-            break;
-        case data.cod >= '400' && data.cod < '500':
-            throw data.message;
-        default:
-            break;
-    }
-};
-
-//Dynamic UI
 const iconsPath = './assets/icons/';
 const icons = {
     'Rain': 'water.svg',
@@ -87,15 +28,6 @@ function resetPageData() {
     for (card of cards) {
         card.remove();
     }
-}
-
-function startMeasure() {
-    return performance.now();
-}
-
-function stopMeasure(startingTime) {
-    const endingTime = performance.now();
-    console.log(`This code took ${endingTime - startingTime} milliseconds.`);
 }
 
 function getTimeZone() {
