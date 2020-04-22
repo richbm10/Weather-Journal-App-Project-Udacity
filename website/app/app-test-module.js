@@ -353,7 +353,7 @@ function resetWeatherTemperature() {
         '#time, #temperature, #feels-like, #weather-main, #max-temperature, #min-temperature'
     );
     document.querySelector('#weather-icon').removeAttribute('src');
-    for (element of elements) {
+    for (let element of elements) {
         element.textContent = '';
     }
 }
@@ -417,7 +417,7 @@ function resetPageData() {
     resetTopBar();
     resetWeatherTemperature();
     const cards = document.querySelectorAll('.weather-card');
-    for (card of cards) {
+    for (let card of cards) {
         card.remove();
     }
 }
@@ -503,6 +503,18 @@ function setChangeLocationListener() {
         activateAlert(document.querySelector('#zip-code-alert'));
     });
 }
+
+// const zipCodes = ['55801', '03217', '97201', '05751', '99501', '85001', '72201', '94203', '90001', '06101', '19901', '20001', '30301'];
+
+// for (let zipCode of zipCodes) {
+//     query = webServices.queryWeatherByZipCode(zipCode, 'us');
+//     webServices.getRequestAPI(query).then((response) => {
+//         webServices.handleResponse(response, () => { console.log('handled') });
+//     }).catch((error) => {
+//         console.log('error', error);
+//     });
+//     console.log(webServices.weatherData);
+// }
 
 document.addEventListener('DOMContentLoaded', function() {
     setGenerateListener();

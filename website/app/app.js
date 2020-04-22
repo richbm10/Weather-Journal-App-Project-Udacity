@@ -73,15 +73,19 @@ webServices.set('&appid=be40e6c98cb3c7bdec82f9dbba07c905', 'http://api.openweath
 
 const iconsPath = './assets/icons/';
 const icons = {
+    'Snow': 'snow.svg',
     'Rain': 'water.svg',
     'Wind': 'wind.svg',
+    'Haze': 'haze.svg',
+    'Clear': 'clear.svg',
     'Clouds': 'clouds.svg',
     'Sea Level': 'ocean.svg',
     'Ground Level': 'mountains.svg',
     'Humidity': 'water.svg',
     'Sunrise': 'sun.svg',
     'Sunset': 'sunset.svg',
-    'Pressure': 'pressure.svg'
+    'Pressure': 'pressure.svg',
+    'Extreme': 'extreme-weather.svg'
 };
 
 const weatherCardsA = new Set(['Rain', 'Wind', 'Clouds', 'Snow', 'Pressure']);
@@ -147,6 +151,13 @@ function addValue(weatherCard, tag, value) {
     return weatherCard;
 }
 
+function validateValue(value) {
+    if (value === undefined) {
+        return '';
+    }
+    return value;
+}
+
 function addRowValue(property) {
     const value = document.createElement('span');
     switch (property) {
@@ -195,16 +206,16 @@ function setColValues(property) {
 
     switch (property) {
         case 'Snow':
-            valueColA.textContent = `${webServices.weatherData.snow['1h']}%`;
-            valueColB.textContent = `${webServices.weatherData.snow['3h']}%`;
+            valueColA.textContent = `${validateValue(webServices.weatherData.snow['1h'])}%`;
+            valueColB.textContent = `${validateValue(webServices.weatherData.snow['3h'])}%`;
             break;
         case 'Rain':
-            valueColA.textContent = `${webServices.weatherData.rain['1h']}%`;
-            valueColB.textContent = `${webServices.weatherData.rain['3h']}%`;
+            valueColA.textContent = `${validateValue(webServices.weatherData.rain['1h'])}%`;
+            valueColB.textContent = `${validateValue(webServices.weatherData.rain['3h'])}%`;
             break;
         case 'Wind':
-            valueColA.textContent = `${webServices.weatherData.wind.speed} m/s`;
-            valueColB.textContent = `${webServices.weatherData.wind.deg}°`;
+            valueColA.textContent = `${validateValue(webServices.weatherData.wind.speed)} m/s`;
+            valueColB.textContent = `${validateValue(webServices.weatherData.wind.deg)}°`;
             break;
         default:
             break;
@@ -340,7 +351,12 @@ function setWeatherTemperature() {
     );
 
     time.textContent = getTimeZone();
-    weatherIcon.setAttribute('src', `${iconsPath}climate.svg`);
+    const iconName = webServices.weatherData.weather[0].main;
+    let icon = 'climate.svg';
+    if (iconName in icons) {
+        icon = icons[iconName];
+    }
+    weatherIcon.setAttribute('src', iconsPath + icon);
     temperature.textContent = `${webServices.weatherData.main.temp}°`;
     feelsLike.textContent = `Feels like ${webServices.weatherData.main.feels_like}°`;
     weatherMain.textContent = webServices.weatherData.weather[0].description;
@@ -353,7 +369,7 @@ function resetWeatherTemperature() {
         '#time, #temperature, #feels-like, #weather-main, #max-temperature, #min-temperature'
     );
     document.querySelector('#weather-icon').removeAttribute('src');
-    for (element of elements) {
+    for (let element of elements) {
         element.textContent = '';
     }
 }
@@ -417,7 +433,7 @@ function resetPageData() {
     resetTopBar();
     resetWeatherTemperature();
     const cards = document.querySelectorAll('.weather-card');
-    for (card of cards) {
+    for (let card of cards) {
         card.remove();
     }
 }

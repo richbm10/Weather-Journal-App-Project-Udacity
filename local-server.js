@@ -46,13 +46,13 @@ app.post('/weather/post/addWeatherFeelings', (request, response) => {
 });
 
 function addProjectData(data) {
-    if (data.id in projectData) {
-        projectData[data.id].feelings.push(data.feeling);
+    if (data.sys.id in projectData) {
+        projectData[data.sys.id].feelings.push(data.feeling);
     } else {
         const weather = Object.assign({}, data);
         weather.allFeelings = [weather.feelings];
         delete weather.feelings;
-        projectData[data.id] = weather;
+        projectData[data.sys.id] = weather;
     }
 }
 
