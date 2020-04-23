@@ -1,0 +1,12 @@
+/* Landscape phones (height 320px and up) */
+
+@media only screen and (min-height: 320px) and (orientation: landscape) {
+    .active-alert {
+        left: 30%;
+    }
+    #alert {
+        grid-template-columns: 73vh;
+        grid-template-rows: 10vw 7vw;
+        top: 25%;
+    }
+}

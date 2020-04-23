@@ -2,6 +2,8 @@
 @import "../../components/top-bar/phones-landscape.css";
 @import "../../components/button/phones-landscape.css";
 @import "../../components/weather-card/phones-landscape.css";
+@import "../../components/alert/phones-landscape.css";
+@import "../../components/zip-code-alert/phones-landscape.css";
 
 /* Landscape phones (height 320px and up) */
 

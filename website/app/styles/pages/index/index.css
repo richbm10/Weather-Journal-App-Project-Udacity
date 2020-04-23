@@ -3,8 +3,8 @@
 @import "../../components/top-bar/top-bar.css";
 @import "../../components/button/button.css";
 @import "../../components/weather-card/weather-card.css";
-@import "../../components/alert.css";
-@import "../../components/zip-code-alert.css";
+@import "../../components/alert/alert.css";
+@import "../../components/zip-code-alert/zip-code-alert.css";
 html {
     scroll-behavior: smooth;
 }

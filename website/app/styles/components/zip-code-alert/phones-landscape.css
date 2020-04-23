@@ -1,0 +1,16 @@
+/* Landscape phones (height 320px and up) */
+
+@media only screen and (min-height: 320px) and (orientation: landscape) {
+    .button.zip-code-alert-button {
+        width: 30vh;
+    }
+    #zip-code-alert {
+        top: 25%;
+        grid-template-columns: 40vh 40vh;
+        grid-template-rows: 6vw 15vw 10vw;
+    }
+    #zip-code-alert-input {
+        width: 60vh;
+        height: 5vw;
+    }
+}

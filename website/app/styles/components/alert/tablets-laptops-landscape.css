@@ -1,0 +1,7 @@
+/* Landscape laptops (height 768px and up) */
+
+@media only screen and (min-height: 768px) and (orientation: landscape) {
+    .active-alert {
+        left: 20%;
+    }
+}

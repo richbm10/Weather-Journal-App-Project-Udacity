@@ -7,11 +7,11 @@
 }
 
 .active-alert {
-    left: 10vw;
+    left: 10%;
 }
 
 .unactive-alert {
-    left: -100vw;
+    left: -100%;
 }
 
 #alert {
