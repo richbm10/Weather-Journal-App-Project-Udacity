@@ -34,6 +34,7 @@ body {
 
 #weather-icon {
     width: 15vw;
+    height: 15vw;
     margin-right: 1%;
 }
 
@@ -74,34 +75,7 @@ body {
 @media only screen and (min-width: 768px) {
     #weather-icon {
         width: 12vw;
-        margin-right: 0%;
-    }
-}
-
-
-/* Landscape laptops (height 768px and up) */
-
-@media only screen and (min-height: 768px) and (orientation: landscape) {
-    body {
-        grid-template-columns: 6vw 50vw 1fr 42vw;
-    }
-    #feelings-form {
-        position: fixed;
-        top: 9vh;
-        right: 6vw;
-        z-index: 1;
-    }
-    #feelings-input {
-        width: 28vw;
-    }
-    #generate {
-        width: 30vw;
-    }
-    #change-location {
-        width: 50vw;
-    }
-    #weather-icon {
-        width: 5vw;
+        height: 12vh;
         margin-right: 0%;
     }
 }

@@ -1,0 +1,21 @@
+/* Landscape laptops (height 768px and up) */
+
+@media only screen and (min-height: 768px) and (orientation: landscape) {
+    .weather-card {
+        width: 50vw;
+    }
+    .weather-card-row {
+        width: 40vw;
+    }
+    .weather-card.weather-card-simple {
+        width: 35vw;
+    }
+    .weather-card-icon {
+        height: 7vh;
+        width: 7vw;
+        margin-right: 0vw;
+    }
+    .row-line {
+        width: 9vw;
+    }
+}

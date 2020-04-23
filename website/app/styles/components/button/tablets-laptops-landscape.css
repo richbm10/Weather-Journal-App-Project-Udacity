@@ -1,0 +1,8 @@
+/* Landscape laptops (height 768px and up) */
+
+@media only screen and (min-height: 768px) and (orientation: landscape) {
+    .button {
+        height: 4vw;
+        border-radius: 4vw;
+    }
+}

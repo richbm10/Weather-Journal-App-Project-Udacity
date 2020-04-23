@@ -1,0 +1,31 @@
+@import "../components/weather-card/tablets-laptops-landscape.css";
+@import "../theme/tablets-laptops-landscape.css";
+@import "../components/button/tablets-laptops-landscape.css";
+
+/* Landscape laptops (height 768px and up) */
+
+@media only screen and (min-height: 768px) and (orientation: landscape) {
+    body {
+        grid-template-columns: 6vw 50vw 1fr 42vw;
+    }
+    #feelings-form {
+        position: fixed;
+        top: 9vh;
+        right: 6vw;
+        z-index: 1;
+    }
+    #feelings-input {
+        width: 28vw;
+    }
+    #generate {
+        width: 30vw;
+    }
+    #change-location {
+        width: 50vw;
+    }
+    #weather-icon {
+        width: 10vh;
+        height: 10vw;
+        margin-right: 0%;
+    }
+}

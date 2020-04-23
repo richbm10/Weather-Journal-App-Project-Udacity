@@ -1,0 +1,16 @@
+/* Landscape laptops (height 768px and up) */
+
+@media only screen and (min-height: 768px) and (orientation: landscape) {
+    .base-font {
+        font-size: 32px;
+    }
+}
+
+
+/* Landscape tablets (height 768px and up) (width 1024px and low)*/
+
+@media only screen and (min-height: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .base-font {
+        font-size: 26px;
+    }
+}

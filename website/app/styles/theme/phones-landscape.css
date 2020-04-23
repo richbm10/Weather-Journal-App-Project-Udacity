@@ -1,0 +1,16 @@
+/* Landscape Phones (heigth 320px and up) */
+
+@media only screen and (min-height: 320px) and (orientation: landscape) {
+    .base-font {
+        font-size: 18px;
+    }
+}
+
+
+/* Landscape phones (height 400px and up) */
+
+@media only screen and (min-height: 375px) and (orientation: landscape) {
+    .base-font {
+        font-size: 22px;
+    }
+}

@@ -56,28 +56,10 @@ h1 {
 }
 
 
-/* Tablets (width 768px and up) */
-
-@media only screen and (min-width: 768px) {
-    .base-font {
-        font-size: 32px;
-    }
-}
-
-
 /* Devices (width 900px and up) */
 
 @media only screen and (min-width: 900px) {
     .base-font {
         font-size: 42px;
-    }
-}
-
-
-/* Landscape laptops (height 768px and up) */
-
-@media only screen and (min-height: 768px) and (orientation: landscape) {
-    .base-font {
-        font-size: 32px;
     }
 }

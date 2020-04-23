@@ -1,0 +1,11 @@
+/* Landscape phones (height 320px and up) */
+
+@media only screen and (min-height: 320px) and (orientation: landscape) {
+    #top-bar {
+        height: 6vw;
+    }
+    .top-bar-icon {
+        height: 8vw;
+        width: 8vh;
+    }
+}

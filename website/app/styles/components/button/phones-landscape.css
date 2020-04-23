@@ -1,0 +1,8 @@
+/* Landscape phones (height 320px and up) */
+
+@media only screen and (min-height: 320px) and (orientation: landscape) {
+    .button {
+        height: 6vw;
+        border-radius: 4vw;
+    }
+}
