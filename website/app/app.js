@@ -325,7 +325,7 @@ function createWeatherCardRow() {
 //Dynamic HTML-Builder
 
 function buildHtmlMainElement(element) {
-    document.querySelector('#main').appendChild(element);
+    document.querySelector('#references').insertAdjacentHTML('beforebegin', element.outerHTML);
 }
 
 //Dynamic HTML-Set or Reset Page Content
