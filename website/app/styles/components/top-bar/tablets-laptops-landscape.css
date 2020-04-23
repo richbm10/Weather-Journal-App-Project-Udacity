@@ -1,0 +1,11 @@
+/* Landscape laptops (height 768px and up) */
+
+@media only screen and (min-height: 768px) and (orientation: landscape) {
+    #top-bar {
+        height: 8vh;
+    }
+    .top-bar-icon {
+        height: 7vh;
+        width: 7vw;
+    }
+}

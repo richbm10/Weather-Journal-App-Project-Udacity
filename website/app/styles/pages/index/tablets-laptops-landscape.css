@@ -1,7 +1,7 @@
-@import "../theme/tablets-laptops-landscape.css";
-@import "../components/top-bar/tablets-laptops-landscape.css";
-@import "../components/button/tablets-laptops-landscape.css";
-@import "../components/weather-card/tablets-laptops-landscape.css";
+@import "../../theme/tablets-laptops-landscape.css";
+@import "../../components/top-bar/tablets-laptops-landscape.css";
+@import "../../components/button/tablets-laptops-landscape.css";
+@import "../../components/weather-card/tablets-laptops-landscape.css";
 
 /* Landscape laptops (height 768px and up) */
 
