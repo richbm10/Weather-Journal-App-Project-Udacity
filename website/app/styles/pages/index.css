@@ -1,8 +1,8 @@
 @import "../global.css";
-@import "../theme.css";
-@import "../components/top-bar.css";
-@import "../components/button.css";
-@import "../components/weather-card.css";
+@import "../theme/theme.css";
+@import "../components/top-bar/top-bar.css";
+@import "../components/button/button.css";
+@import "../components/weather-card/weather-card.css";
 @import "../components/alert.css";
 @import "../components/zip-code-alert.css";
 html {
@@ -24,16 +24,12 @@ body {
 
 #main {
     position: relative;
-    top: 30px;
+    top: 6vh;
     grid-area: main;
-    display: grid;
-    margin: 0;
-    grid-template-columns: 1fr 80vw 1fr;
-    grid-template-rows: 1fr;
 }
 
 #main-content {
-    padding: 5vh 0 5vh 0;
+    padding: 3vh 0;
     grid-area: 1/2/2/3;
 }
 
@@ -42,8 +38,8 @@ body {
 }
 
 #weather-icon {
-    width: 45px;
-    height: 45px;
+    width: 15vw;
+    height: 15vh;
     margin-right: 1%;
 }
 
@@ -56,7 +52,7 @@ body {
 }
 
 #feelings-form {
-    margin-top: 5vh;
+    margin-top: 3vh;
     border: none;
     padding: 1%;
 }
@@ -65,6 +61,7 @@ body {
     overflow: auto;
     outline: none;
     padding: 2% 0% 0% 5%;
+    width: 65vw;
 }
 
 #generate {
@@ -74,17 +71,15 @@ body {
 
 #change-location {
     width: 80vw;
-    margin-top: 5vh;
+    margin-top: 3vh;
 }
 
-@media(min-width: 768px) {
-    #main {
-        top: 40px;
-    }
-}
 
-@media(min-width: 1000px) {
-    #main {
-        top: 60px;
+/* Tablets (width 768px and up) */
+
+
+/* @media only screen and (min-width: 768px) and (orientation: portrait) {
+    body {
+        grid-template-columns: 1fr 80vw 1fr;
     }
-}
+} */

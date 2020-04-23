@@ -1,6 +1,6 @@
 .card {
     border: 1px solid #00B1FF;
-    border-radius: 12px;
+    border-radius: 2.10vh;
 }
 
 .pipe {
@@ -15,20 +15,20 @@
 }
 
 .weather-card-icon {
-    width: 35px;
-    height: 35px;
+    width: 12vw;
+    height: 6vh;
     margin-right: 2vw;
 }
 
 .weather-card {
     width: 80vw;
     padding: 2% 0 2% 0;
-    margin-top: 5vh;
+    margin-top: 3vh;
     justify-content: space-evenly;
 }
 
 .weather-card-row {
-    width: 60vw;
+    width: 70vw;
     justify-content: space-between;
 }
 

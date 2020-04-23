@@ -1,0 +1,86 @@
+span {
+    font-size: 0.85em;
+}
+
+h1 {
+    margin: 0;
+    font-size: 3.5em;
+}
+
+.base-font {
+    font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+    font-size: 16px;
+    color: #FFFFFF;
+}
+
+.base-font::placeholder {
+    color: #FFFFFF;
+}
+
+.primary-color {
+    background-color: #3EC4FF;
+}
+
+.secondary-color {
+    background-color: #00B1FF;
+}
+
+.third-color {
+    background-color: #1BC861;
+}
+
+.fourth-color {
+    background-color: #CB516E;
+}
+
+.fifth-color {
+    background-color: rgb(59, 96, 216);
+}
+
+
+/* Phones (width 375px and up) */
+
+@media only screen and (min-width: 375px) and (orientation: portrait) {
+    .base-font {
+        font-size: 18px;
+    }
+}
+
+
+/* Small tablets and large phones (width 600px and up) */
+
+@media only screen and (min-width: 600px) and (orientation: portrait) {
+    .base-font {
+        font-size: 26px;
+    }
+}
+
+
+/* Tablets (width 768px and up) */
+
+
+/* @media only screen and (min-width: 768px) and (orientation: portrait) {
+    .base-font {
+        font-size: 32px;
+    }
+} */
+
+
+/* Large devices (laptops/desktops, 992px and up) */
+
+
+/* @media only screen and (min-width: 992px) {
+    .base-font {
+        font-size: 16px;
+    }
+} */
+
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+
+
+/* @media only screen and (min-width: 1200px) {
+    .base-font {
+        font-size: 16px;
+    }
+} */

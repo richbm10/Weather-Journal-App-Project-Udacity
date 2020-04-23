@@ -54,7 +54,7 @@ const WeatherServicesSingleton = (function() {
                                 callBack();
                                 break;
                             case response.cod >= '400' && response.cod < '500':
-                                throw response.message;
+                                throw `${response.cod} ${response.message}`;
                             default:
                                 break;
                         }
@@ -447,8 +447,8 @@ function activateAlert(alert) {
     alert.classList.add('active-alert');
 }
 
-function activateMessageAlert(cod, message) {
-    document.querySelector('#alert-message').textContent = `${cod} ${toTitleCase(message)}`;
+function activateMessageAlert(message) {
+    document.querySelector('#alert-message').textContent = `${toTitleCase(message)}`;
     activateAlert(document.querySelector('#alert'));
 }
 
@@ -472,12 +472,16 @@ function setGenerateListener() {
         const query = webServices.queryAddWeatherFeelings;
 
         webServices.postRequestLocalServer(query, {...webServices.weatherData, feelings }).then((response) => {
-            webServices.handleResponse(response, () => {
-                feelingsForm.feelings.value = '';
-                activateMessageAlert('', 'Weather Personal Feelings Submitted');
-            });
+            try {
+                webServices.handleResponse(response, () => {
+                    feelingsForm.feelings.value = '';
+                    activateMessageAlert('Weather Personal Feelings Submitted');
+                });
+            } catch (error) {
+                activateMessageAlert(error);
+            }
         }).catch(() => {
-            activateMessageAlert('503', 'Server Error Connection');
+            activateMessageAlert('503 Server Error Connection');
         });
     });
 }
@@ -493,9 +497,13 @@ function setChangeLocationListener() {
 
         const query = webServices.queryWeatherByZipCode(zipCode, countryCode);
         webServices.getRequestAPI(query).then((response) => {
-            webServices.handleResponse(response, setPageData);
+            try {
+                webServices.handleResponse(response, setPageData);
+            } catch (error) {
+                activateMessageAlert(error);
+            }
         }).catch(() => {
-            activateMessageAlert(webServices.weatherData.cod, webServices.weatherData.message);
+            activateMessageAlert('503 Server Error Connection');
         });
     });
 
@@ -510,8 +518,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#alert-close').addEventListener('click', deactivateAlert);
 
     const zipCodeAlertForm = document.querySelector('#zip-code-alert-form');
-    zipCodeAlertForm.zipCode.value = ''; //94040
+    zipCodeAlertForm.zipCode.value = '94040'; //94040
     zipCodeAlertForm.countryCode.value = 'us';
 
-    activateAlert(document.querySelector('#zip-code-alert'));
+    const query = webServices.queryWeatherByZipCode(zipCodeAlertForm.zipCode.value, zipCodeAlertForm.countryCode.value);
+    webServices.getRequestAPI(query).then((response) => {
+        try {
+            webServices.handleResponse(response, setPageData);
+        } catch (error) {
+            activateMessageAlert(error);
+        }
+    }).catch(() => {
+        activateMessageAlert('503 Server Error Connection');
+    });
+
+    //activateAlert(document.querySelector('#zip-code-alert'));
 });

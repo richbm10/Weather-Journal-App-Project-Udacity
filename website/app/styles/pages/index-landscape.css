@@ -1,0 +1,25 @@
+@import "../theme/theme-landscape.css";
+@import "../components/top-bar/top-bar-landscape.css";
+@import "../components/button/button-landscape.css";
+@import "../components/weather-card/weather-card-landscape.css";
+
+/* Landscape phones (width 568px and up) */
+
+@media only screen and (min-width: 568px) and (orientation: landscape) {
+    #main-content {
+        padding: 3vw 0;
+    }
+    #main {
+        top: 6vw;
+    }
+    #feelings-form {
+        margin-top: 3vw;
+    }
+    #change-location {
+        margin-top: 3vw;
+    }
+    #weather-icon {
+        width: 15vh;
+        height: 15vw;
+    }
+}
