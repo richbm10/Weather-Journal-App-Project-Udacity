@@ -14,7 +14,6 @@ body {
     margin: 0;
     grid-template-columns: 1fr 80vw 1fr;
     grid-template-rows: 1fr;
-    grid-template-areas: "main main main";
 }
 
 .temp-container {
@@ -25,10 +24,6 @@ body {
 #main {
     position: relative;
     top: 6vh;
-    grid-area: main;
-}
-
-#main-content {
     padding: 3vh 0;
     grid-area: 1/2/2/3;
 }
@@ -39,7 +34,6 @@ body {
 
 #weather-icon {
     width: 15vw;
-    height: 15vh;
     margin-right: 1%;
 }
 
@@ -77,9 +71,37 @@ body {
 
 /* Tablets (width 768px and up) */
 
-
-/* @media only screen and (min-width: 768px) and (orientation: portrait) {
-    body {
-        grid-template-columns: 1fr 80vw 1fr;
+@media only screen and (min-width: 768px) {
+    #weather-icon {
+        width: 12vw;
+        margin-right: 0%;
     }
-} */
+}
+
+
+/* Landscape laptops (height 768px and up) */
+
+@media only screen and (min-height: 768px) and (orientation: landscape) {
+    body {
+        grid-template-columns: 6vw 50vw 1fr 42vw;
+    }
+    #feelings-form {
+        position: fixed;
+        top: 9vh;
+        right: 6vw;
+        z-index: 1;
+    }
+    #feelings-input {
+        width: 28vw;
+    }
+    #generate {
+        width: 30vw;
+    }
+    #change-location {
+        width: 50vw;
+    }
+    #weather-icon {
+        width: 5vw;
+        margin-right: 0%;
+    }
+}

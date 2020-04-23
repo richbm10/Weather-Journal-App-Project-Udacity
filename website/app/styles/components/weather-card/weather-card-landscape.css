@@ -1,6 +1,7 @@
 /* Landscape phones (width 568px and up) */
 
-@media only screen and (min-width: 568px) and (orientation: landscape) {
+
+/* @media only screen and (min-width: 568px) and (orientation: landscape) {
     .weather-card {
         margin-top: 3vw;
     }
@@ -8,4 +9,4 @@
         width: 12vh;
         height: 6vw;
     }
-}
+} */

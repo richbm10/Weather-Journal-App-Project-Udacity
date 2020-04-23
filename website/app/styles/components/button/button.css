@@ -5,3 +5,13 @@
     height: 4vh;
     text-align: center;
 }
+
+
+/* Tablets (width 768px and up) */
+
+@media only screen and (min-width: 768px) {
+    .button {
+        height: 5vh;
+        border-radius: 3vh;
+    }
+}

@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <link rel="stylesheet" href="./app/styles/pages/index.css" />
+    <link rel="stylesheet" href="./app/styles/pages/index.css" media="screen" />
+    <link rel="stylesheet" href="./app/styles/pages/index-landscape.css" media="screen and (orientation: landscape) and (min-height: 320px)" />
     <title>Weather Journal App</title>
 </head>
 
@@ -15,38 +16,36 @@
         <object type="image/svg+xml" data="./assets/icons/location_on-24px.svg" id="location-icon" class="top-bar-icon"></object>
     </div>
 
-    <main id="main">
-        <div id="main-content" class="container-top">
-            <div class="container-top">
-                <span id="time"></span>
+    <main id="main" class="container-top">
+        <div class="container-top">
+            <span id="time"></span>
 
-                <div class="container-left">
-                    <img id="weather-icon" alt="" />
+            <div class="container-left">
+                <img id="weather-icon" alt="" />
 
-                    <h1 id="temperature"></h1>
-                </div>
-
-                <div class="container-left">
-                    <div class="container-top temp-container">
-                        <span id="max-temperature"></span>
-                        <span id="min-temperature"></span>
-                    </div>
-
-                    <div id="weather-condition" class="container-top temp-container">
-                        <span id="feels-like"></span>
-                        <span id="weather-main"></span>
-                    </div>
-                </div>
+                <h1 id="temperature"></h1>
             </div>
 
-            <button id="change-location" class="button fifth-color base-font">Change Location</button>
+            <div class="container-left">
+                <div class="container-top temp-container">
+                    <span id="max-temperature"></span>
+                    <span id="min-temperature"></span>
+                </div>
 
-            <form id="feelings-form" class="card container-top secondary-color">
-                <textarea id="feelings-input" class="card primary-color base-font" name="feelings" placeholder="How you feel the weather?" rows="9" cols="32"></textarea>
-
-                <button id="generate" class="button third-color base-font" type="button">Submit</button>
-            </form>
+                <div id="weather-condition" class="container-top temp-container">
+                    <span id="feels-like"></span>
+                    <span id="weather-main"></span>
+                </div>
+            </div>
         </div>
+
+        <button id="change-location" class="button fifth-color base-font" type="button">Change Location</button>
+
+        <form id="feelings-form" class="card container-top secondary-color">
+            <textarea id="feelings-input" class="card primary-color base-font" name="feelings" placeholder="How you feel the weather?" rows="9" cols="32"></textarea>
+
+            <button id="generate" class="button third-color base-font" type="button">Submit</button>
+        </form>
     </main>
 
     <div id="zip-code-alert" class="card secondary-color unactive-alert">
@@ -58,16 +57,16 @@
         </form>
 
         <div class="zip-code-alert-buttons container">
-            <button id="close-zip-code" class="button zip-code-alert-button fourth-color base-font">Close</button>
+            <button id="close-zip-code" class="button zip-code-alert-button fourth-color base-font" type="button">Close</button>
 
-            <button id="enter-zip-code" class="button zip-code-alert-button third-color base-font">Enter</button>
+            <button id="enter-zip-code" class="button zip-code-alert-button third-color base-font" type="button">Enter</button>
         </div>
     </div>
 
     <div id="alert" class="card secondary-color unactive-alert">
         <b id="alert-message" class="alert-label"></b>
 
-        <button id="alert-close" class="button fourth-color base-font">Close</button>
+        <button id="alert-close" class="button fourth-color base-font" type="button">Close</button>
     </div>
 
     <script src="./app/app.js"></script>

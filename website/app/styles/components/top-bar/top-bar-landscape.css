@@ -1,6 +1,7 @@
 /* Landscape phones (width 568px and up) */
 
-@media only screen and (min-width: 568px) and (orientation: landscape) {
+
+/* @media only screen and (min-width: 568px) and (orientation: landscape) {
     #top-bar {
         height: 6vw;
     }
@@ -8,4 +9,4 @@
         height: 8vw;
         width: 8vh;
     }
-}
+} */

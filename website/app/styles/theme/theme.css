@@ -40,7 +40,7 @@ h1 {
 
 /* Phones (width 375px and up) */
 
-@media only screen and (min-width: 375px) and (orientation: portrait) {
+@media only screen and (min-width: 375px) {
     .base-font {
         font-size: 18px;
     }
@@ -49,7 +49,7 @@ h1 {
 
 /* Small tablets and large phones (width 600px and up) */
 
-@media only screen and (min-width: 600px) and (orientation: portrait) {
+@media only screen and (min-width: 600px) {
     .base-font {
         font-size: 26px;
     }
@@ -58,29 +58,26 @@ h1 {
 
 /* Tablets (width 768px and up) */
 
-
-/* @media only screen and (min-width: 768px) and (orientation: portrait) {
+@media only screen and (min-width: 768px) {
     .base-font {
         font-size: 32px;
     }
-} */
+}
 
 
-/* Large devices (laptops/desktops, 992px and up) */
+/* Devices (width 900px and up) */
 
-
-/* @media only screen and (min-width: 992px) {
+@media only screen and (min-width: 900px) {
     .base-font {
-        font-size: 16px;
+        font-size: 42px;
     }
-} */
+}
 
 
-/* Extra large devices (large laptops and desktops, 1200px and up) */
+/* Landscape laptops (height 768px and up) */
 
-
-/* @media only screen and (min-width: 1200px) {
+@media only screen and (min-height: 768px) and (orientation: landscape) {
     .base-font {
-        font-size: 16px;
+        font-size: 32px;
     }
-} */
+}
