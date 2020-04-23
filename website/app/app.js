@@ -48,9 +48,11 @@ const WeatherServicesSingleton = (function() {
                     queryAddWeatherFeelings: '/weather/post/addWeatherFeelings',
                     handleResponse: function(response, callBack) {
                         response.cod = `${response.cod}`;
-                        this.weatherData = response;
                         switch (true) {
                             case response.cod >= '200' && response.cod < '300':
+                                if ('weather' in response) {
+                                    this.weatherData = response;
+                                }
                                 callBack();
                                 break;
                             case response.cod >= '400' && response.cod < '500':

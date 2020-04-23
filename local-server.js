@@ -34,20 +34,32 @@ const confirmationMessage = {
     message: 'Success'
 };
 
+const errorMessage = {
+    cod: 500,
+    message: 'Internal Server Error'
+};
+
 app.get('/all', (request, response) => {
     response.send(projectData);
     logActivatedService('HTTP GET Service: /all', request.body, projectData);
 });
 
 app.post('/weather/post/addWeatherFeelings', (request, response) => {
-    addProjectData(request.body);
-    response.send(confirmationMessage);
-    logActivatedService('\nHTTP POST Service: /weather/post/addWeatherFeelings', request.body, confirmationMessage);
+    let message;
+    try {
+        message = confirmationMessage;
+        addProjectData(request.body);
+        response.send(message);
+    } catch (error) {
+        message = errorMessage;
+        console.log('Error', error);
+    }
+    logActivatedService('\nHTTP POST Service: /weather/post/addWeatherFeelings', request.body, message);
 });
 
 function addProjectData(data) {
     if (data.sys.id in projectData) {
-        projectData[data.sys.id].feelings.push(data.feeling);
+        projectData[data.sys.id].allFeelings.push(data.feelings);
     } else {
         const weather = Object.assign({}, data);
         weather.allFeelings = [weather.feelings];
@@ -60,5 +72,6 @@ function logActivatedService(service, requestLog, responseLog) {
     console.log(service);
     console.log('\nBody Request:\n', requestLog);
     console.log('\nBody Response:\n', responseLog);
+    console.log('\nCurrent Project Data:\n', projectData);
     logActiveServer();
 }
