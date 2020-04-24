@@ -27,7 +27,7 @@ Methods:
         Process: if the response has a HTTP success code, the response is assigned as the weatherData and the callBack function is executed.
         If the response has a HTTP error code, then an error is thrown.
 */
-export const WeatherServicesSingleton = (function() {
+const WeatherServicesSingleton = (function() {
     let instance;
     return {
         getInstance: () => {
