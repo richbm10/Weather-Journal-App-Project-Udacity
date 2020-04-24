@@ -97,7 +97,7 @@ const WeatherServicesSingleton = (function() {
 })();
 
 const webServices = WeatherServicesSingleton.getInstance();
-webServices.set('&appid=be40e6c98cb3c7bdec82f9dbba07c905', 'http://api.openweathermap.org/data/2.5/weather?', 'http://localhost:8000');
+webServices.set('&appid=be40e6c98cb3c7bdec82f9dbba07c905', 'https://api.openweathermap.org/data/2.5/weather?', 'http://localhost:8000');
 
 //Dynamic HTML
 
