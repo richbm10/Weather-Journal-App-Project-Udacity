@@ -11,5 +11,14 @@ built based on the data from the response.
 Also, the project includes a node.js local server, which helps for posting the personal opinion of the user of how the weather feels like in that server from the web application.
 For achieving this functionality; the server must be running, so it has to be started by running: node local-server.js in the terminal.
 
+Icons made by:
+- Freepik from www.flaticon.com
+- Vitaly Gorbachev from www.flaticon.com
+- surang from www.flaticon.com
+- Pause08 from www.flaticon.com
+- monkik from www.flaticon.com
+- Swifticons from www.flaticon.com
+- Smashicons from www.flaticon.com
+
 Objective:
 Implement a dynamic and responssive weather journal app, whose content changes based on the requested data from an API; and, post data in a node.js local server.
